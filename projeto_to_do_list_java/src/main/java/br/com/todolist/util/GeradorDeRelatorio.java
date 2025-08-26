@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class GeradorDeRelatorio {
+
+    
     public static void gerarPdf(String nomeArquivo, String titulo, String[] cabecalhos, List<String[]> dados) {
         try (PdfWriter writer = new PdfWriter(nomeArquivo)) {
             PdfDocument pdf = new PdfDocument(writer);

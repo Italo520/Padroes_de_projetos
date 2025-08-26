@@ -3,14 +3,10 @@ package br.com.todolist.service;
 import br.com.todolist.models.Evento;
 import br.com.todolist.models.Tarefa;
 import br.com.todolist.models.Usuario;
-import br.com.todolist.util.GeradorDeRelatorio;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Orquestrador {
 
@@ -94,16 +90,15 @@ public class Orquestrador {
     }
 
     public boolean enviarRelatorioTarefasDoDiaPorEmail(LocalDate dia) {
-        String nomeArquivoPDF = relatorioService.enviarRelatorioTarefasDoDiaPorEmail(dia);
+        String nomeArquivoPDF = relatorioService.gerarRelatorioPDFTarefasDoDia(dia);
         if (nomeArquivoPDF == null) {
             return false;
         }
-        return relatorioService.enviarRelatorioTarefasDoDiaPorEmail(dia, nomeArquivoPDF);
+        return notificacaoService.enviarRelatorioTarefasDoDiaPorEmail(dia, nomeArquivoPDF);
     }
 
     public void gerarRelatorioTarefasPorMes(YearMonth mes, String nomeArquivo) {
-        RelatorioService relatorioService = new RelatorioService(this.gerenteDeTarefas);
-        relatorioService.gerarRelatorioTarefasPorMes(mes, nomeArquivo);
+        this.relatorioService.gerarRelatorioTarefasPorMes(mes, nomeArquivo);
     }
 
 }

@@ -49,8 +49,9 @@ public class NotificacaoService {
         boolean sucesso = mensageiro.enviarEmailComAnexo(this.emailUsuario, assunto, corpo, nomeArquivo);
         if (sucesso) {
             new File(nomeArquivo).delete();
-        return sucesso;
+            return true;
         }
+        return false;
     }
 
 

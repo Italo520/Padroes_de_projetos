@@ -1,6 +1,5 @@
 package br.com.todolist.service;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -19,10 +18,10 @@ public class RelatorioService {
 
 
 
-    public boolean gerarRelatorioPDFTarefasDoDia(LocalDate dia) {
+    public String gerarRelatorioPDFTarefasDoDia(LocalDate dia) {
         List<Tarefa> tarefas = this.gerenteDeTarefas.listarTarefasPorDia(dia);
         if (tarefas == null || tarefas.isEmpty()) {
-            return false; 
+            return null; 
         }
 
         String nomeArquivo = "Relatorio_Tarefas_" + dia.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ".pdf";
@@ -33,7 +32,7 @@ public class RelatorioService {
             .map(t -> new String[]{t.getTitulo(), t.getDescricao(), String.valueOf(t.getPrioridade())})
             .collect(Collectors.toList());
 
-        GeradorDeRelatorio.gerarPDF(nomeArquivo, tituloRelatorio, cabecalhos, dados);
+        GeradorDeRelatorio.gerarPdf(nomeArquivo, tituloRelatorio, cabecalhos, dados);
         return nomeArquivo;
     }
 
