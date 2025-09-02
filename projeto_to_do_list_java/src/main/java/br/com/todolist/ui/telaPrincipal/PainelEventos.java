@@ -1,6 +1,7 @@
 package br.com.todolist.ui.telaPrincipal;
 
 import br.com.todolist.models.Evento;
+import br.com.todolist.service.NotificacaoService;
 import br.com.todolist.service.Orquestrador;
 import br.com.todolist.ui.TelasDialogo.DialogoEvento;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class PainelEventos extends PainelBase {
 
     private final Orquestrador orquestrador;
+    private final NotificacaoService notificacaoService;
 
     private DefaultListModel<Evento> modeloListaEventos;
     private JList<Evento> listaDeEventos;
@@ -24,8 +26,9 @@ public class PainelEventos extends PainelBase {
     private JLabel valorDescricao;
     private JLabel valorTempoRestante;
 
-    public PainelEventos(Orquestrador orquestrador) {
+    public PainelEventos(Orquestrador orquestrador, NotificacaoService notificacaoService) {
         this.orquestrador = orquestrador;
+        this.notificacaoService = notificacaoService;
         inicializarLayout();
     }
 
@@ -127,7 +130,7 @@ public class PainelEventos extends PainelBase {
     private class OuvinteBotaoNovoEvento implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Frame framePrincipal = (Frame) SwingUtilities.getWindowAncestor(PainelEventos.this);
-            DialogoEvento dialogo = new DialogoEvento(framePrincipal, orquestrador);
+            DialogoEvento dialogo = new DialogoEvento(framePrincipal, orquestrador, notificacaoService);
             dialogo.setVisible(true);
 
             if (dialogo.foiSalvo()) {
@@ -145,7 +148,7 @@ public class PainelEventos extends PainelBase {
             }
 
             Frame framePrincipal = (Frame) SwingUtilities.getWindowAncestor(PainelEventos.this);
-            DialogoEvento dialogo = new DialogoEvento(framePrincipal, orquestrador, eventoSelecionado);
+            DialogoEvento dialogo = new DialogoEvento(framePrincipal, orquestrador, notificacaoService, eventoSelecionado);
             dialogo.setVisible(true);
 
             if (dialogo.foiSalvo()) {
@@ -168,6 +171,7 @@ public class PainelEventos extends PainelBase {
 
             if (confirmacao == JOptionPane.YES_OPTION) {
                 orquestrador.excluirEvento(eventoSelecionado);
+                notificacaoService.notificarExclusaoEvento(eventoSelecionado);
                 popularListaEventos();
             }
         }

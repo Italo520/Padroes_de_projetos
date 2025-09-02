@@ -2,6 +2,7 @@ package br.com.todolist.ui.telaPrincipal;
 
 import br.com.todolist.models.Evento;
 import br.com.todolist.models.Tarefa;
+import br.com.todolist.service.NotificacaoService;
 import br.com.todolist.service.Orquestrador;
 import br.com.todolist.util.GeradorDeRelatorio;
 
@@ -21,7 +22,7 @@ public class BarraFerramentas {
     private static final DateTimeFormatter FORMATADOR_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FORMATADOR_MES_ANO = DateTimeFormatter.ofPattern("MM/yyyy");
 
-    public static JMenuBar criarBarraFerramentas(TelaPrincipal frame, Orquestrador orquestrador) {
+    public static JMenuBar criarBarraFerramentas(TelaPrincipal frame, Orquestrador orquestrador, NotificacaoService notificacaoService) {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu menuArquivo = new JMenu("Arquivo");
@@ -47,7 +48,7 @@ public class BarraFerramentas {
         pdfDoDia.addActionListener(new OuvinteGerarPdfTarefas(frame, orquestrador));
 
         JMenuItem enviarEmailTarefas = new JMenuItem("Enviar Tarefas do Dia por Email");
-        enviarEmailTarefas.addActionListener(new OuvinteEnviarEmailTarefas(frame, orquestrador));
+        enviarEmailTarefas.addActionListener(new OuvinteEnviarEmailTarefas(frame, orquestrador, notificacaoService));
         
         JMenuItem relatorioTarefasPorMes = new JMenuItem("Relatório de Tarefas por Mês (Excel)");
         relatorioTarefasPorMes.addActionListener(new OuvinteGerarExcelTarefas(frame, orquestrador));
@@ -216,15 +217,22 @@ public class BarraFerramentas {
     private static class OuvinteEnviarEmailTarefas implements ActionListener {
         private final JFrame frame;
         private final Orquestrador orquestrador;
+        private final NotificacaoService notificacaoService;
 
-        public OuvinteEnviarEmailTarefas(JFrame frame, Orquestrador orquestrador) {
+        public OuvinteEnviarEmailTarefas(JFrame frame, Orquestrador orquestrador, NotificacaoService notificacaoService) {
             this.frame = frame;
             this.orquestrador = orquestrador;
+            this.notificacaoService = notificacaoService;
         }
         public void actionPerformed(ActionEvent e) {
             obterDataDoUsuario(frame, "Digite a data para o envio do relatório (dd/MM/yyyy):")
                 .ifPresent(dia -> {
-                    boolean sucesso = orquestrador.enviarRelatorioTarefasDoDiaPorEmail(dia);
+                    String nomeArquivoPDF = orquestrador.gerarRelatorioPDFTarefasDoDia(dia);
+                    if (nomeArquivoPDF == null) {
+                        JOptionPane.showMessageDialog(frame, "Não foi possível gerar o relatório em PDF.", "Erro", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    boolean sucesso = notificacaoService.enviarRelatorioTarefasDoDiaPorEmail(dia, nomeArquivoPDF);
                     if (sucesso) {
                         JOptionPane.showMessageDialog(frame, "Email com o relatório em anexo enviado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                     } else {
