@@ -1,7 +1,9 @@
 package br.com.todolist.ui.TelasDialogo;
 
 import br.com.todolist.models.Tarefa;
+import br.com.todolist.service.NotificacaoService;
 import br.com.todolist.service.Orquestrador;
+import br.com.todolist.ui.TelasDialogo.controllers.DialogoTarefaController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +13,7 @@ import java.time.format.DateTimeParseException;
 
 public class DialogoTarefa extends JDialog {
 
-    private final Orquestrador orquestrador;
+    private final DialogoTarefaController controller;
     private Tarefa tarefa;
 
     private JTextField campoTitulo;
@@ -26,17 +28,17 @@ public class DialogoTarefa extends JDialog {
     private final DateTimeFormatter formatadorDeData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // Construtores
-    public DialogoTarefa(Frame frame, Orquestrador orquestrador) {
+    public DialogoTarefa(Frame frame, Orquestrador orquestrador, NotificacaoService notificacaoService, String emailUsuario) {
         super(frame, "Nova Tarefa", true);
-        this.orquestrador = orquestrador;
+        this.controller = new DialogoTarefaController(orquestrador, notificacaoService, emailUsuario);
         this.tarefa = null;
         configurarEAdicionarComponentes();
         configurarAcoes();
     }
 
-    public DialogoTarefa(Frame frame, Orquestrador orquestrador, Tarefa tarefaParaEditar) {
+    public DialogoTarefa(Frame frame, Orquestrador orquestrador, NotificacaoService notificacaoService, String emailUsuario, Tarefa tarefaParaEditar) {
         super(frame, "Editar Tarefa", true);
-        this.orquestrador = orquestrador;
+        this.controller = new DialogoTarefaController(orquestrador, notificacaoService, emailUsuario);
         this.tarefa = tarefaParaEditar;
         configurarEAdicionarComponentes();
         preencherCampos();
@@ -117,9 +119,9 @@ public class DialogoTarefa extends JDialog {
             LocalDate prazo = LocalDate.parse(campoPrazo.getText(), formatadorDeData);
 
             if (this.tarefa == null) {
-                orquestrador.cadastrarTarefa(titulo, descricao, prazo, prioridade);
+                controller.salvarNovaTarefa(titulo, descricao, prazo, prioridade);
             } else {
-                orquestrador.editarTarefa(this.tarefa, titulo, descricao, prazo, prioridade);
+                controller.editarTarefa(this.tarefa, titulo, descricao, prazo, prioridade);
             }
 
             this.salvo = true;

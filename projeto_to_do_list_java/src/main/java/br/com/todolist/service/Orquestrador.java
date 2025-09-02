@@ -2,7 +2,6 @@ package br.com.todolist.service;
 
 import br.com.todolist.models.Evento;
 import br.com.todolist.models.Tarefa;
-import br.com.todolist.models.Usuario;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -12,23 +11,18 @@ public class Orquestrador {
 
     private final GerenteDeTarefas gerenteDeTarefas;
     private final GerenteDeEventos gerenteDeEventos;
-    private final NotificacaoService notificacaoService;
     private final RelatorioService relatorioService;
     private final String emailUsuario;
 
-    public Orquestrador(Usuario usuario) {
-        GerenteDeDadosDoUsuario dadosDoUsuario = new GerenteDeDadosDoUsuario();
-        this.emailUsuario = usuario.getEmail();
-        this.gerenteDeTarefas = new GerenteDeTarefas(dadosDoUsuario, this.emailUsuario);
-        this.gerenteDeEventos = new GerenteDeEventos(dadosDoUsuario, this.emailUsuario);
-        this.notificacaoService = new NotificacaoService(this.emailUsuario);
-        this.relatorioService = new RelatorioService(this.gerenteDeTarefas);
+    public Orquestrador(GerenteDeEventos gerenteDeEventos, GerenteDeTarefas gerenteDeTarefas, RelatorioService relatorioService, String emailUsuario) {
+        this.gerenteDeEventos = gerenteDeEventos;
+        this.gerenteDeTarefas = gerenteDeTarefas;
+        this.relatorioService = relatorioService;
+        this.emailUsuario = emailUsuario;
     }
 
-    public void cadastrarTarefa(String titulo, String descricao, LocalDate deadline, int prioridade) {
-        Tarefa novaTarefa = new Tarefa(titulo, descricao, this.emailUsuario, deadline, prioridade);
+    public void cadastrarTarefa(Tarefa novaTarefa) {
         this.gerenteDeTarefas.cadastrarTarefa(novaTarefa);
-        this.notificacaoService.notificarCriacaoTarefa(novaTarefa);
     }
 
     public List<Tarefa> listarTodasTarefas() {
@@ -37,13 +31,11 @@ public class Orquestrador {
 
     public void excluirTarefa(Tarefa tarefa) {
         this.gerenteDeTarefas.excluirTarefa(tarefa);
-        this.notificacaoService.notificarexclusaoTarefa(tarefa);
     }
 
     public void editarTarefa(Tarefa tarefaOriginal, String novoTitulo, String novaDescricao, LocalDate novoDeadline,
             int novaPrioridade) {
         this.gerenteDeTarefas.editarTarefa(tarefaOriginal, novoTitulo, novaDescricao, novoDeadline, novaPrioridade);
-        this.notificacaoService.notificarEdicaoTarefa(tarefaOriginal);
     }
 
     public void atualizarTarefa(Tarefa tarefa) {
@@ -60,11 +52,7 @@ public class Orquestrador {
 
     public boolean cadastrarEvento(String titulo, String descricao, LocalDate deadline) {
         Evento novoEvento = new Evento(titulo, descricao, this.emailUsuario, deadline);
-        boolean sucesso = this.gerenteDeEventos.cadastrarEvento(novoEvento);
-        if (sucesso) {
-            this.notificacaoService.notificarCriacaoEvento(novoEvento);
-        }
-        return sucesso;
+        return this.gerenteDeEventos.cadastrarEvento(novoEvento);
     }
 
     public List<Evento> listarTodosEventos() {
@@ -73,12 +61,10 @@ public class Orquestrador {
 
     public void excluirEvento(Evento evento) {
         this.gerenteDeEventos.excluirEvento(evento);
-        this.notificacaoService.notificarExclusaoEvento(evento);
     }
 
     public void editarEvento(Evento eventoOriginal, String novoTitulo, String novaDescricao, LocalDate novoDeadline) {
         this.gerenteDeEventos.editarEvento(eventoOriginal, novoTitulo, novaDescricao, novoDeadline);
-        this.notificacaoService.notificarEdicaoEvento(eventoOriginal);
     }
 
     public List<Evento> listarEventosPorDia(LocalDate dia) {
@@ -89,12 +75,8 @@ public class Orquestrador {
         return this.gerenteDeEventos.listarEventosPorMes(mes);
     }
 
-    public boolean enviarRelatorioTarefasDoDiaPorEmail(LocalDate dia) {
-        String nomeArquivoPDF = relatorioService.gerarRelatorioPDFTarefasDoDia(dia);
-        if (nomeArquivoPDF == null) {
-            return false;
-        }
-        return notificacaoService.enviarRelatorioTarefasDoDiaPorEmail(dia, nomeArquivoPDF);
+    public String gerarRelatorioPDFTarefasDoDia(LocalDate dia) {
+        return relatorioService.gerarRelatorioPDFTarefasDoDia(dia);
     }
 
     public void gerarRelatorioTarefasPorMes(YearMonth mes, String nomeArquivo) {

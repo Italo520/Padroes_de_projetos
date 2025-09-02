@@ -2,6 +2,7 @@ package br.com.todolist.ui.telaPrincipal;
 
 import br.com.todolist.models.Subtarefa;
 import br.com.todolist.models.Tarefa;
+import br.com.todolist.service.NotificacaoService;
 import br.com.todolist.service.Orquestrador;
 import br.com.todolist.ui.TelasDialogo.DialogoTarefa;
 
@@ -19,6 +20,8 @@ import java.util.List;
 public class PainelTarefas extends PainelBase {
 
     private final Orquestrador orquestrador;
+    private final NotificacaoService notificacaoService;
+    private final String emailUsuario;
 
     private DefaultListModel<Tarefa> modeloListaTarefas;
     private DefaultListModel<Subtarefa> modeloListaSubtarefas;
@@ -32,9 +35,11 @@ public class PainelTarefas extends PainelBase {
 
     private final DateTimeFormatter formatadorDeData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public PainelTarefas(Orquestrador orquestrador) {
+    public PainelTarefas(Orquestrador orquestrador, NotificacaoService notificacaoService, String emailUsuario) {
         super();
         this.orquestrador = orquestrador;
+        this.notificacaoService = notificacaoService;
+        this.emailUsuario = emailUsuario;
         super.inicializarLayout();
     }
 
@@ -141,7 +146,7 @@ public class PainelTarefas extends PainelBase {
             valorDescricao.setText(tarefa.getDescricao());
             valorPrioridade.setText(String.valueOf(tarefa.getPrioridade()));
             valorPrazo.setText(tarefa.getDeadline().format(formatadorDeData));
-            valorConclusao.setText((int) tarefa.obterPercentual() + "%");
+            valorConclusao.setText((int) tarefa.obterPercentual() + "% ");
         } else {
             valorDescricao.setText("Selecione uma tarefa");
             valorPrioridade.setText("-");
@@ -180,7 +185,7 @@ public class PainelTarefas extends PainelBase {
 
     private class OuvinteBotaoNovaTarefa implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            DialogoTarefa dialogo = new DialogoTarefa((Frame) SwingUtilities.getWindowAncestor(PainelTarefas.this), orquestrador);
+            DialogoTarefa dialogo = new DialogoTarefa((Frame) SwingUtilities.getWindowAncestor(PainelTarefas.this), orquestrador, notificacaoService, emailUsuario);
             dialogo.setVisible(true);
             if (dialogo.foiSalvo()) {
                 popularListaTarefas();
@@ -195,7 +200,7 @@ public class PainelTarefas extends PainelBase {
                 JOptionPane.showMessageDialog(PainelTarefas.this, "Por favor, selecione uma tarefa para editar.", "Nenhuma Tarefa Selecionada", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            DialogoTarefa dialogo = new DialogoTarefa((Frame) SwingUtilities.getWindowAncestor(PainelTarefas.this), orquestrador, tarefaSelecionada);
+            DialogoTarefa dialogo = new DialogoTarefa((Frame) SwingUtilities.getWindowAncestor(PainelTarefas.this), orquestrador, notificacaoService, emailUsuario, tarefaSelecionada);
             dialogo.setVisible(true);
             if (dialogo.foiSalvo()) {
                 popularListaTarefas();
@@ -217,6 +222,7 @@ public class PainelTarefas extends PainelBase {
                     JOptionPane.WARNING_MESSAGE);
             if (resposta == JOptionPane.YES_OPTION) {
                 orquestrador.excluirTarefa(tarefaSelecionada);
+                notificacaoService.notificarexclusaoTarefa(tarefaSelecionada);
                 popularListaTarefas();
             }
         }
