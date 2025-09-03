@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.todolist.models.Tarefa;
-import br.com.todolist.util.GeradorDeRelatorio;
+import br.com.todolist.util.GeradorDeExcel;
+import br.com.todolist.util.GeradorDePDF;
 
 public class RelatorioService {
     private GerenteDeTarefas gerenteDeTarefas;
@@ -16,32 +17,23 @@ public class RelatorioService {
         this.gerenteDeTarefas = gerenteDeTarefas;
     }
 
-
-
     public String gerarRelatorioPDFTarefasDoDia(LocalDate dia) {
         List<Tarefa> tarefas = this.gerenteDeTarefas.listarTarefasPorDia(dia);
-        if (tarefas == null || tarefas.isEmpty()) {
-            return null; 
-        }
 
         String nomeArquivo = "Relatorio_Tarefas_" + dia.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ".pdf";
         String tituloRelatorio = "Relatório de Tarefas - " + dia.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        
         String[] cabecalhos = {"Título", "Descrição", "Prioridade"};
-        List<String[]> dados = tarefas.stream()
-            .map(t -> new String[]{t.getTitulo(), t.getDescricao(), String.valueOf(t.getPrioridade())})
-            .collect(Collectors.toList());
 
-        GeradorDeRelatorio.gerarPdf(nomeArquivo, tituloRelatorio, cabecalhos, dados);
+        List<String[]> dados = gerenteDeTarefas.listarTarefasPorDia(dia);
+        
+        GeradorDePDF.gerarPdf(nomeArquivo, tituloRelatorio, cabecalhos, dados);
         return nomeArquivo;
     }
 
 
     public void gerarRelatorioTarefasPorMes(YearMonth mes, String nomeArquivo) {
-        List<Tarefa> tarefasDoMes = this.gerenteDeTarefas.listarTodasTarefas().stream()
-                .filter(t -> YearMonth.from(t.getDeadline()).equals(mes))
-                .collect(Collectors.toList());
-                
+        tarefasDoMes = gerenteDeTarefas.listarTarefasPorMes(mes);
+
         String[] cabecalhos = {"Título", "Descrição", "Prioridade", "Prazo", "Conclusão (%)"};
         
         List<String[]> dados = tarefasDoMes.stream()
@@ -58,6 +50,6 @@ public class RelatorioService {
             .collect(Collectors.toList());
 
         String nomePlanilha = "Tarefas de " + mes.format(DateTimeFormatter.ofPattern("MM-yyyy"));
-        GeradorDeRelatorio.gerarExcel(nomeArquivo, nomePlanilha, cabecalhos, dados, colunaExtra);
+        GeradorDeExcel.gerarExcel(nomeArquivo, nomePlanilha, cabecalhos, dados, colunaExtra);
 }
 }
