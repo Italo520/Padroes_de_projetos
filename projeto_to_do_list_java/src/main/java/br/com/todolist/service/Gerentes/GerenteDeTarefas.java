@@ -86,5 +86,12 @@ public class GerenteDeTarefas {
             System.err.println("Aviso: Tentativa de atualizar uma tarefa não encontrada.");
         }
     }
+    
+    public List<Tarefa> listarTarefasPorMes(YearMonth mes) {
+        List<Tarefa> tarefasDoMes = this.gerenteDeTarefas.listarTodasTarefas().stream()
+                .filter(t -> YearMonth.from(t.getDeadline()).equals(mes))
+                .collect(Collectors.toList());
+                
+        return tarefasDoMes;
 
 }
