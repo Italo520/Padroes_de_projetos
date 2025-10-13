@@ -1,6 +1,6 @@
-package br.com.todolist.ui.telaPrincipal;
+package br.com.todolist.ui.core_ui;
 
-import br.com.todolist.models.Subtarefa;
+import br.com.todolist.entity.Subtarefa;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import javax.swing.JCheckBox;

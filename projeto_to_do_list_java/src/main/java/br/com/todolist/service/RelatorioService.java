@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.com.todolist.models.Tarefa;
+import br.com.todolist.entity.Tarefa;
 import br.com.todolist.util.GeradorDeRelatorio;
 
 public class RelatorioService {
