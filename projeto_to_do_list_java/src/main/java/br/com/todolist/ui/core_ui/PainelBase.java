@@ -1,13 +1,18 @@
-package br.com.todolist.ui.telaPrincipal;
+package br.com.todolist.ui.core_ui;
 
 import java.awt.Dimension;
 import javax.swing.JPanel;
 
 public abstract class PainelBase extends JPanel {
 
-    public PainelBase() {
+    protected PainelBase() {
         super();
         setLayout(null); 
+    }
+
+    @Override
+    public int getDebugGraphicsOptions() {
+        return super.getDebugGraphicsOptions();
     }
 
     public Dimension getPreferredSize() {

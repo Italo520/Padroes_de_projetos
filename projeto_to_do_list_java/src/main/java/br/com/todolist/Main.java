@@ -1,6 +1,8 @@
+// Em: src/main/java/br/com/todolist/Main.java
 package br.com.todolist;
 
-import br.com.todolist.ui.telasusuario.TelaLogin;
+import br.com.todolist.ui.controllers_ui.telausuario.TelaLoginController;
+import br.com.todolist.ui.views.telasusuario.TelaLoginView;
 import javax.swing.SwingUtilities;
 import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
 
@@ -10,8 +12,8 @@ public class Main {
         FlatCarbonIJTheme.setup();
 
         SwingUtilities.invokeLater(() -> {
-            TelaLogin telaLogin = new TelaLogin();
-            telaLogin.setVisible(true);
+            TelaLoginView view = new TelaLoginView();
+            new TelaLoginController(view); // O controller se anexa à view
         });
     }
 }

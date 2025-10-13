@@ -1,7 +1,7 @@
 // Em: src/main/java/br/com/todolist/service/GerenteDeUsuarios.java
 package br.com.todolist.service;
 
-import br.com.todolist.models.Usuario;
+import br.com.todolist.entity.Usuario;
 import br.com.todolist.persistence.GerenciadorDePersistenciaJson;
 
 import java.io.File;

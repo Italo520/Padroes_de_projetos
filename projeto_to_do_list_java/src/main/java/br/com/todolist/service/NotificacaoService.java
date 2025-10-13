@@ -4,8 +4,8 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import br.com.todolist.models.Evento;
-import br.com.todolist.models.Tarefa;
+import br.com.todolist.entity.Evento;
+import br.com.todolist.entity.Tarefa;
 import br.com.todolist.util.Mensageiro;
 
 public class NotificacaoService {

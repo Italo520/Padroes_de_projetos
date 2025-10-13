@@ -6,14 +6,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.com.todolist.models.Tarefa;
-import br.com.todolist.util.GeradorDeExcel;
-import br.com.todolist.util.GeradorDePDF;
+
+import br.com.todolist.entity.Tarefa;
+
 
 public class RelatorioService {
-    private GerenteDeTarefas gerenteDeTarefas;
+    private br.com.todolist.service.GerenteDeTarefas gerenteDeTarefas;
 
-    public RelatorioService(GerenteDeTarefas gerenteDeTarefas) {
+    public RelatorioService(br.com.todolist.service.GerenteDeTarefas gerenteDeTarefas) {
         this.gerenteDeTarefas = gerenteDeTarefas;
     }
 
