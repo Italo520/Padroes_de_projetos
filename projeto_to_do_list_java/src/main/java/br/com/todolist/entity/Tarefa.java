@@ -1,28 +1,34 @@
 package br.com.todolist.entity;
 
+import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 
-
+@Entity
+@Table(name = "tarefas")
 public class Tarefa extends Itens {
 
     private LocalDate dataConclusao;
     private int prioridade;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "tarefa_id")
     private List<Subtarefa> subtarefas;
 
     public Tarefa() {
     }
 
-    public Tarefa(String titulo, String descricao, String criado_por, LocalDate deadline, int prioridade) {
-        super(titulo, descricao, "Tarefa", criado_por, deadline);
+    public Tarefa(String titulo, String descricao, Usuario usuario, LocalDate deadline, int prioridade) {
+        super(titulo, descricao, "Tarefa", usuario, deadline);
         this.prioridade = prioridade;
         this.dataConclusao = null;
         this.subtarefas = new ArrayList<>();
     }
 
     public double obterPercentual() {
-        if (subtarefas.isEmpty()) {
+        if (subtarefas == null || subtarefas.isEmpty()) {
             return dataConclusao != null ? 100.0 : 0.0;
         }
 
@@ -32,6 +38,8 @@ public class Tarefa extends Itens {
 
         return ((double) subtarefasConcluidas / subtarefas.size()) * 100;
     }
+
+    // Getters e Setters
 
     public LocalDate getDataConclusao() {
         return dataConclusao;
@@ -53,18 +61,20 @@ public class Tarefa extends Itens {
         return subtarefas;
     }
 
-    public void setSubtarefas(List<Subtarefa> subtarefas) {
-        this.subtarefas = subtarefas;
-    }
-
     public void adicionarSubtarefa(Subtarefa subtarefa) {
+        if (this.subtarefas == null) {
+            this.subtarefas = new ArrayList<>();
+        }
         this.subtarefas.add(subtarefa);
     }
 
     public void removerSubtarefa(Subtarefa subtarefa) {
-        this.subtarefas.remove(subtarefa);
+        if (this.subtarefas != null) {
+            this.subtarefas.remove(subtarefa);
+        }
     }
 
+    @Override
     public String toString() {
         return getTitulo();
     }

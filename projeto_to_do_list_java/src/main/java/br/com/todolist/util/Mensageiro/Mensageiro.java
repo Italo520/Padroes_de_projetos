@@ -50,7 +50,7 @@ public class Mensageiro {
             multipart.addBodyPart(textoBodyPart);
 
             // Parte 2: O anexo
-            if (caminhoArquivo == null){
+            if (caminhoArquivo != null && !caminhoArquivo.trim().isEmpty()){
                 MimeBodyPart anexoBodyPart = new MimeBodyPart();
                 File arquivoAnexo = new File(caminhoArquivo);
                 

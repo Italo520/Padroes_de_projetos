@@ -46,7 +46,7 @@ public class NotificacaoService {
         String assunto = "Seu Relatório de Tarefas do Dia: " + dia.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String corpo = "Olá!\n\nSegue em anexo o relatório com suas tarefas para o dia " + dia.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 + ".\n\nAtenciosamente,\nSistema ToDoList.";
-        boolean sucesso = mensageiro.enviarEmailComAnexo(this.emailUsuario, assunto, corpo, nomeArquivo);
+        boolean sucesso = mensageiro.enviarEmail(this.emailUsuario, assunto, corpo, nomeArquivo);
         if (sucesso) {
             new File(nomeArquivo).delete();
             return true;

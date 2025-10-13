@@ -1,10 +1,9 @@
 package br.com.todolist.service;
 
 
-import br.com.todolist.entity.Evento;
-import br.com.todolist.entity.Tarefa;
-
-
+import br.com.todolist.entity.Usuario;
+import br.com.todolist.service.Gerentes.GerenteDeEventos;
+import br.com.todolist.service.Gerentes.GerenteDeTarefas;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -15,13 +14,11 @@ public class Orquestrador {
     private final GerenteDeTarefas gerenteDeTarefas;
     private final GerenteDeEventos gerenteDeEventos;
     private final RelatorioService relatorioService;
-    private final String emailUsuario;
 
-    public Orquestrador(GerenteDeEventos gerenteDeEventos, GerenteDeTarefas gerenteDeTarefas, RelatorioService relatorioService, String emailUsuario) {
+    public Orquestrador(GerenteDeEventos gerenteDeEventos, GerenteDeTarefas gerenteDeTarefas, RelatorioService relatorioService, Usuario usuario) {
         this.gerenteDeEventos = gerenteDeEventos;
         this.gerenteDeTarefas = gerenteDeTarefas;
         this.relatorioService = relatorioService;
-        this.emailUsuario = emailUsuario;
     }
 
     public void cadastrarTarefa(Tarefa novaTarefa) {
@@ -53,8 +50,7 @@ public class Orquestrador {
         return this.gerenteDeTarefas.listarTarefasCriticas();
     }
 
-    public boolean cadastrarEvento(String titulo, String descricao, LocalDate deadline) {
-        Evento novoEvento = new Evento(titulo, descricao, this.emailUsuario, deadline);
+    public boolean cadastrarEvento(Evento novoEvento) {
         return this.gerenteDeEventos.cadastrarEvento(novoEvento);
     }
 

@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 
 import br.com.todolist.entity.Tarefa;
+import br.com.todolist.util.GeradorDeExcel;
+import br.com.todolist.util.GeradorDePDF;
 
 
 public class RelatorioService {
@@ -24,32 +26,40 @@ public class RelatorioService {
         String tituloRelatorio = "Relatório de Tarefas - " + dia.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String[] cabecalhos = {"Título", "Descrição", "Prioridade"};
 
-        List<String[]> dados = gerenteDeTarefas.listarTarefasPorDia(dia);
-        
+        // ADICIONE ESTA CONVERSÃO:
+        List<String[]> dados = tarefas.stream()
+                .map(t -> new String[]{
+                        t.getTitulo(),
+                        t.getDescricao(),
+                        String.valueOf(t.getPrioridade())
+                })
+                .collect(Collectors.toList());
+
         GeradorDePDF.gerarPdf(nomeArquivo, tituloRelatorio, cabecalhos, dados);
         return nomeArquivo;
     }
 
 
     public void gerarRelatorioTarefasPorMes(YearMonth mes, String nomeArquivo) {
-        tarefasDoMes = gerenteDeTarefas.listarTarefasPorMes(mes);
+
+        List<Tarefa> tarefasDoMes = gerenteDeTarefas.listarTarefasPorMes(mes); // <--- CORREÇÃO
 
         String[] cabecalhos = {"Título", "Descrição", "Prioridade", "Prazo", "Conclusão (%)"};
-        
+
         List<String[]> dados = tarefasDoMes.stream()
-            .map(t -> new String[]{
-                t.getTitulo(),
-                t.getDescricao(),
-                String.valueOf(t.getPrioridade()),
-                t.getDeadline().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-            })
-            .collect(Collectors.toList());
-            
+                .map(t -> new String[]{
+                        t.getTitulo(),
+                        t.getDescricao(),
+                        String.valueOf(t.getPrioridade()),
+                        t.getDeadline().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                })
+                .collect(Collectors.toList());
+
         List<String> colunaExtra = tarefasDoMes.stream()
-            .map(t -> String.format("%.0f%%", t.obterPercentual()))
-            .collect(Collectors.toList());
+                .map(t -> String.format("%.0f%%", t.obterPercentual()))
+                .collect(Collectors.toList());
 
         String nomePlanilha = "Tarefas de " + mes.format(DateTimeFormatter.ofPattern("MM-yyyy"));
         GeradorDeExcel.gerarExcel(nomeArquivo, nomePlanilha, cabecalhos, dados, colunaExtra);
-}
+    }
 }

@@ -13,17 +13,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import br.com.todolist.entity.Usuario;
+
 public class PainelTarefasController extends MouseAdapter {
     private final PainelTarefasView view;
     private final Orquestrador orquestrador;
     private final NotificacaoService notificacaoService;
-    private final String emailUsuario;
+    private final Usuario usuario;
 
-    public PainelTarefasController(PainelTarefasView view, Orquestrador orquestrador, NotificacaoService notificacaoService, String emailUsuario) {
+    public PainelTarefasController(PainelTarefasView view, Orquestrador orquestrador, NotificacaoService notificacaoService, Usuario usuario) {
         this.view = view;
         this.orquestrador = orquestrador;
         this.notificacaoService = notificacaoService;
-        this.emailUsuario = emailUsuario;
+        this.usuario = usuario;
         this.view.setController(this);
         atualizarListaPrincipal();
     }
@@ -35,7 +37,7 @@ public class PainelTarefasController extends MouseAdapter {
 
     public void novaTarefa() {
         DialogoTarefaView dialogoView = new DialogoTarefaView((JFrame) SwingUtilities.getWindowAncestor(view), "Nova Tarefa", null);
-        new DialogoTarefaController(dialogoView, orquestrador, notificacaoService, emailUsuario, null);
+        new DialogoTarefaController(dialogoView, orquestrador, notificacaoService, usuario, null);
         dialogoView.setVisible(true);
         if (dialogoView.foiSalvo()) {
             atualizarListaPrincipal();
@@ -49,7 +51,7 @@ public class PainelTarefasController extends MouseAdapter {
             return;
         }
         DialogoTarefaView dialogoView = new DialogoTarefaView((JFrame) SwingUtilities.getWindowAncestor(view), "Editar Tarefa", tarefaSelecionada);
-        new DialogoTarefaController(dialogoView, orquestrador, notificacaoService, emailUsuario, tarefaSelecionada);
+        new DialogoTarefaController(dialogoView, orquestrador, notificacaoService, usuario, tarefaSelecionada);
         dialogoView.setVisible(true);
         if (dialogoView.foiSalvo()) {
             atualizarListaPrincipal();

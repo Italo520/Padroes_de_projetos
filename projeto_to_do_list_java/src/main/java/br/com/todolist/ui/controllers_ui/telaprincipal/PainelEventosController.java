@@ -1,24 +1,17 @@
-package br.com.todolist.ui.controllers_ui.telaprincipal;
-
-import br.com.todolist.entity.Evento;
-import br.com.todolist.service.NotificacaoService;
-import br.com.todolist.service.Orquestrador;
-import br.com.todolist.ui.controllers.teladialogo.DialogoEventoController;
-import br.com.todolist.ui.views.teladialogo.DialogoEventoView;
-import br.com.todolist.ui.views.telaprincipal.PainelEventosView;
-
-import javax.swing.*;
-import java.util.List;
+import br.com.todolist.entity.Usuario;
+import br.com.todolist.ui.controllers_ui.teladialogo.DialogoEventoController;
 
 public class PainelEventosController {
     private final PainelEventosView view;
     private final Orquestrador orquestrador;
     private final NotificacaoService notificacaoService;
+    private final Usuario usuario;
 
-    public PainelEventosController(PainelEventosView view, Orquestrador orquestrador, NotificacaoService notificacaoService) {
+    public PainelEventosController(PainelEventosView view, Orquestrador orquestrador, NotificacaoService notificacaoService, Usuario usuario) {
         this.view = view;
         this.orquestrador = orquestrador;
         this.notificacaoService = notificacaoService;
+        this.usuario = usuario;
         this.view.setController(this);
         atualizarListaPrincipal();
     }
@@ -30,7 +23,7 @@ public class PainelEventosController {
 
     public void novoEvento() {
         DialogoEventoView dialogoView = new DialogoEventoView((JFrame) SwingUtilities.getWindowAncestor(view), "Novo Evento", null);
-        new DialogoEventoController(dialogoView, orquestrador, notificacaoService, null);
+        new DialogoEventoController(dialogoView, orquestrador, notificacaoService, null, usuario);
         dialogoView.setVisible(true);
 
         if (dialogoView.foiSalvo()) {
@@ -46,7 +39,7 @@ public class PainelEventosController {
         }
 
         DialogoEventoView dialogoView = new DialogoEventoView((JFrame) SwingUtilities.getWindowAncestor(view), "Editar Evento", eventoSelecionado);
-        new DialogoEventoController(dialogoView, orquestrador, notificacaoService, eventoSelecionado);
+        new DialogoEventoController(dialogoView, orquestrador, notificacaoService, eventoSelecionado, usuario);
         dialogoView.setVisible(true);
 
         if (dialogoView.foiSalvo()) {

@@ -1,87 +1,42 @@
-// Em: src/main/java/br/com/todolist/service/GerenteDeUsuarios.java
-package br.com.todolist.service;
+package br.com.todolist.service.Gerentes;
 
+import br.com.todolist.dao.UsuarioDAO;
 import br.com.todolist.entity.Usuario;
-import br.com.todolist.persistence.GerenciadorDePersistenciaJson;
-
-import java.io.File;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import org.mindrot.jbcrypt.BCrypt;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 public class GerenteDeUsuarios {
 
-    private static final String ARQUIVO_USUARIOS = "arquivos/usuarios.json";
-    private GerenciadorDePersistenciaJson persistencia;
-    private List<Usuario> usuarios;
+    private final UsuarioDAO usuarioDAO;
 
     public GerenteDeUsuarios() {
-        criarPastaDeArquivos();
-        this.persistencia = new GerenciadorDePersistenciaJson(ARQUIVO_USUARIOS);
-        this.usuarios = carregarUsuarios();
-    }
-
-    private void criarPastaDeArquivos() {
-        File pasta = new File("arquivos");
-        if (!pasta.exists()) {
-            if (pasta.mkdir()) {
-                System.out.println("Pasta 'arquivos' criada com sucesso.");
-            } else {
-                System.err.println("Erro ao criar a pasta 'arquivos'.");
-            }
-        }
-    }
-
-    private List<Usuario> carregarUsuarios() {
-        Type tipoListaDeUsuarios = new TypeReference<List<Usuario>>() {
-        }.getType();
-        List<Usuario> lista = persistencia.carregar(tipoListaDeUsuarios);
-        return lista != null ? lista : new ArrayList<>();
-    }
-
-    private void salvarUsuarios() {
-        persistencia.salvar(this.usuarios);
-    }
-
-    private String hashSenha(String senhaPura) {
-        return BCrypt.hashpw(senhaPura, BCrypt.gensalt());
+        this.usuarioDAO = new UsuarioDAO();
     }
 
     public boolean criarNovoUsuario(String nome, String email, String password) {
-        if (buscarUsuarioPorEmail(email) != null) {
+        // Verifica se o usuário já existe antes de tentar criar
+        if (usuarioDAO.findByEmail(email).isPresent()) {
+            System.err.println("Erro: Email já cadastrado.");
             return false;
         }
 
-        String senhaHasheada = hashSenha(password);
-        Usuario novoUsuario = new Usuario(nome, email, senhaHasheada);
-        usuarios.add(novoUsuario);
-        salvarUsuarios();
+        // A lógica de hash da senha já é tratada pelo DAO
+        Usuario novoUsuario = new Usuario(nome, email, password);
+        usuarioDAO.salvar(novoUsuario);
         return true;
     }
 
     public Usuario autenticarUsuario(String email, String password) {
-        Usuario usuario = buscarUsuarioPorEmail(email);
-        if (usuario != null && verificarSenha(password, usuario.getPassword())) {
+        // A lógica de autenticação é delegada ao DAO
+        Usuario usuario = usuarioDAO.autenticar(email, password);
+        if (usuario != null) {
             System.out.println("Autenticação bem-sucedida para " + usuario.getNome());
-            return usuario;
+        } else {
+            System.err.println("Erro: Email ou senha incorretos.");
         }
-
-        System.err.println("Erro: Email ou senha incorretos.");
-        return null;
-    }
-
-    public boolean verificarSenha(String senhaFornecida, String hashSalvo) {
-        return BCrypt.checkpw(senhaFornecida, hashSalvo);
+        return usuario;
     }
 
     public Usuario buscarUsuarioPorEmail(String email) {
-        for (Usuario usuario : usuarios) {
-            if (usuario.getEmail().equals(email)) {
-                return usuario;
-            }
-        }
-        return null;
+        // Retorna o usuário se presente, ou null se ausente
+        return usuarioDAO.findByEmail(email).orElse(null);
     }
 }

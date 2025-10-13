@@ -30,17 +30,15 @@ public class TelaPrincipalController {
         this.view = view;
 
         // Inicialização dos serviços e do orquestrador
-        String emailUsuario = usuarioLogado.getEmail();
-        GerenteDeDadosDoUsuario dadosDoUsuario = new GerenteDeDadosDoUsuario();
-        GerenteDeTarefas gerenteDeTarefas = new GerenteDeTarefas(dadosDoUsuario, emailUsuario);
-        GerenteDeEventos gerenteDeEventos = new GerenteDeEventos(dadosDoUsuario, emailUsuario);
-        this.notificacaoService = new NotificacaoService(emailUsuario);
+        GerenteDeTarefas gerenteDeTarefas = new GerenteDeTarefas(usuarioLogado);
+        GerenteDeEventos gerenteDeEventos = new GerenteDeEventos(usuarioLogado);
+        this.notificacaoService = new NotificacaoService(usuarioLogado.getEmail());
         RelatorioService relatorioService = new RelatorioService(gerenteDeTarefas);
-        this.orquestrador = new Orquestrador(gerenteDeEventos, gerenteDeTarefas, relatorioService, emailUsuario);
+        this.orquestrador = new Orquestrador(gerenteDeEventos, gerenteDeTarefas, relatorioService, usuarioLogado);
 
         // Inicialização dos controllers dos painéis
-        this.painelTarefasController = new PainelTarefasController(view.getPainelTarefas(), orquestrador, notificacaoService, emailUsuario);
-        this.painelEventosController = new PainelEventosController(view.getPainelEventos(), orquestrador, notificacaoService);
+        this.painelTarefasController = new PainelTarefasController(view.getPainelTarefas(), orquestrador, notificacaoService, usuarioLogado);
+        this.painelEventosController = new PainelEventosController(view.getPainelEventos(), orquestrador, notificacaoService, usuarioLogado);
 
         // Conecta este controller à view
         this.view.setController(this);

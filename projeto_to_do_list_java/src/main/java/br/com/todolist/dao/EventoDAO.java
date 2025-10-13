@@ -1,28 +1,28 @@
 package br.com.todolist.dao;
 
 import br.com.todolist.config.JPAUtil;
-import br.com.todolist.entity.Tarefa;
+import br.com.todolist.entity.Evento;
 import br.com.todolist.entity.Usuario;
 import jakarta.persistence.EntityManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class TarefaDAO {
+public class EventoDAO {
 
     /**
-     * Salva uma nova tarefa ou atualiza uma existente.
+     * Salva um novo evento ou atualiza um existente.
      */
-    public void salvar(Tarefa tarefa) {
+    public void salvar(Evento evento) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            if (tarefa.getId() == null) {
-                // Se é uma tarefa nova, o JPA gerencia a associação com o usuário
-                em.persist(tarefa);
+            if (evento.getId() == null) {
+                // Se é um evento novo, o JPA gerencia a associação
+                em.persist(evento);
             } else {
-                // Se é uma tarefa existente, atualiza
-                em.merge(tarefa);
+                // Se é um evento existente, atualiza
+                em.merge(evento);
             }
             em.getTransaction().commit();
         } finally {
@@ -31,30 +31,30 @@ public class TarefaDAO {
     }
 
     /**
-     * Busca uma tarefa pelo seu ID.
+     * Busca um evento pelo seu ID.
      */
-    public Optional<Tarefa> buscarPorId(Long id) {
+    public Optional<Evento> buscarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            Tarefa tarefa = em.find(Tarefa.class, id);
-            return Optional.ofNullable(tarefa);
+            Evento evento = em.find(Evento.class, id);
+            return Optional.ofNullable(evento);
         } finally {
             em.close();
         }
     }
 
     /**
-     * Busca todas as tarefas associadas a um usuário específico.
+     * Busca todos os eventos associados a um usuário específico.
      */
-    public List<Tarefa> buscarPorUsuario(Usuario usuario) {
+    public List<Evento> buscarPorUsuario(Usuario usuario) {
         if (usuario == null || usuario.getId() == null) {
             return Collections.emptyList();
         }
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            // JPQL para selecionar tarefas onde o ID do usuário corresponde
-            String jpql = "SELECT t FROM Tarefa t WHERE t.usuario.id = :usuarioId";
-            return em.createQuery(jpql, Tarefa.class)
+            // JPQL para selecionar eventos onde o ID do usuário corresponde
+            String jpql = "SELECT e FROM Evento e WHERE e.usuario.id = :usuarioId";
+            return em.createQuery(jpql, Evento.class)
                     .setParameter("usuarioId", usuario.getId())
                     .getResultList();
         } finally {
@@ -63,19 +63,19 @@ public class TarefaDAO {
     }
 
     /**
-     * Deleta uma tarefa do banco de dados.
+     * Deleta um evento do banco de dados.
      */
-    public void deletar(Tarefa tarefa) {
-        if (tarefa == null || tarefa.getId() == null) {
+    public void deletar(Evento evento) {
+        if (evento == null || evento.getId() == null) {
             return;
         }
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             // Garante que a entidade está no estado gerenciado antes de remover
-            Tarefa tarefaGerenciada = em.find(Tarefa.class, tarefa.getId());
-            if (tarefaGerenciada != null) {
-                em.remove(tarefaGerenciada);
+            Evento eventoGerenciado = em.find(Evento.class, evento.getId());
+            if (eventoGerenciado != null) {
+                em.remove(eventoGerenciado);
             }
             em.getTransaction().commit();
         } finally {

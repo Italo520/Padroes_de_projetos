@@ -1,6 +1,9 @@
-package br.com.todolist.service;
+package br.com.todolist.service.Gerentes;
 
+import br.com.todolist.dao.EventoDAO;
 import br.com.todolist.entity.Evento;
+import br.com.todolist.entity.Usuario;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -8,30 +11,22 @@ import java.util.stream.Collectors;
 
 public class GerenteDeEventos {
 
-    private final GerenteDeDadosDoUsuario gerenciadorDeDados;
-    private final String emailUsuario;
+    private final EventoDAO eventoDAO;
+    private final Usuario usuario;
 
-    public GerenteDeEventos(GerenteDeDadosDoUsuario gerenciadorDeDados, String emailUsuario) {
-        this.gerenciadorDeDados = gerenciadorDeDados;
-        this.emailUsuario = emailUsuario;
+    public GerenteDeEventos(Usuario usuario) {
+        this.eventoDAO = new EventoDAO();
+        this.usuario = usuario;
     }
 
     public boolean cadastrarEvento(Evento novoEvento) {
-        // Verifica se o evento a ser cadastrado pertence ao usuário correto
-        if (!novoEvento.getCriado_por().equals(this.emailUsuario)) {
-            System.err.println("Erro: Tentativa de cadastrar um evento para outro usuário.");
-            return false;
-        }
+        novoEvento.setUsuario(this.usuario);
 
-        // A lógica de verificação de data disponível pode ser feita aqui,
-        // garantindo que não haja dois eventos no mesmo dia para o mesmo usuário.
-        boolean dataDisponivel = gerenciadorDeDados.getEventos().stream()
-                .filter(evento -> this.emailUsuario.equals(evento.getCriado_por()))
+        boolean dataDisponivel = listarTodosEventos().stream()
                 .noneMatch(evento -> evento.getDeadline().isEqual(novoEvento.getDeadline()));
 
         if (dataDisponivel) {
-            gerenciadorDeDados.getEventos().add(novoEvento);
-            gerenciadorDeDados.salvarDados();
+            eventoDAO.salvar(novoEvento);
             return true;
         }
 
@@ -39,44 +34,37 @@ public class GerenteDeEventos {
         return false;
     }
 
-    // Retorna apenas os eventos criados pelo usuário logado
     public List<Evento> listarTodosEventos() {
-        return gerenciadorDeDados.getEventos().stream()
-                .filter(evento -> this.emailUsuario.equals(evento.getCriado_por()))
-                .collect(Collectors.toList());
+        return eventoDAO.buscarPorUsuario(this.usuario);
     }
 
     public void excluirEvento(Evento evento) {
-        // A exclusão precisa ser feita apenas na lista do usuário logado
-        if (this.emailUsuario.equals(evento.getCriado_por())) {
-            gerenciadorDeDados.getEventos().remove(evento);
-            gerenciadorDeDados.salvarDados();
+        if (evento.getUsuario().equals(this.usuario)) {
+            eventoDAO.deletar(evento);
         } else {
             System.err.println("Aviso: Tentativa de excluir evento de outro usuário.");
         }
     }
 
     public void editarEvento(Evento eventoOriginal, String novoTitulo, String novaDescricao, LocalDate novoDeadline) {
-        if (this.emailUsuario.equals(eventoOriginal.getCriado_por())) {
+        if (eventoOriginal.getUsuario().equals(this.usuario)) {
             eventoOriginal.setTitulo(novoTitulo);
             eventoOriginal.setDescricao(novaDescricao);
             eventoOriginal.setDeadLine(novoDeadline);
-            gerenciadorDeDados.salvarDados();
+            eventoDAO.salvar(eventoOriginal);
         } else {
             System.err.println("Aviso: Tentativa de editar evento de outro usuário.");
         }
     }
 
     public List<Evento> listarEventosPorDia(LocalDate dia) {
-        return gerenciadorDeDados.getEventos().stream()
-                .filter(evento -> this.emailUsuario.equals(evento.getCriado_por()))
+        return listarTodosEventos().stream()
                 .filter(evento -> evento.getDeadline().isEqual(dia))
                 .collect(Collectors.toList());
     }
 
     public List<Evento> listarEventosPorMes(YearMonth mes) {
-        return gerenciadorDeDados.getEventos().stream()
-                .filter(evento -> this.emailUsuario.equals(evento.getCriado_por()))
+        return listarTodosEventos().stream()
                 .filter(evento -> YearMonth.from(evento.getDeadline()).equals(mes))
                 .collect(Collectors.toList());
     }

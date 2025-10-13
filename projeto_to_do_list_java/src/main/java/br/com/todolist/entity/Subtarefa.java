@@ -1,6 +1,15 @@
 package br.com.todolist.entity;
 
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "subtarefas")
 public class Subtarefa {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String titulo;
     private boolean status;
@@ -22,11 +31,7 @@ public class Subtarefa {
     }
 
     public void mudarStatus() {
-        if (status == false) {
-            status = true;
-        } else {
-            status = false;
-        }
+        this.status = !this.status;
     }
 
     public boolean isStatus() {
@@ -37,8 +42,8 @@ public class Subtarefa {
         this.status = status;
     }
 
+    @Override
     public String toString() {
         return titulo;
     }
-
 }

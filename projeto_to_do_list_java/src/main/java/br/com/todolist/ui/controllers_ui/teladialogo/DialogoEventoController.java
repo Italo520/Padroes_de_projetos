@@ -11,19 +11,23 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import br.com.todolist.entity.Usuario;
+
 public class DialogoEventoController {
 
     private final DialogoEventoView view;
     private final Orquestrador orquestrador;
     private final NotificacaoService notificacaoService;
     private final Evento eventoOriginal;
+    private final Usuario usuario;
     private final DateTimeFormatter formatadorDeData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public DialogoEventoController(DialogoEventoView view, Orquestrador orquestrador, NotificacaoService notificacaoService, Evento evento) {
+    public DialogoEventoController(DialogoEventoView view, Orquestrador orquestrador, NotificacaoService notificacaoService, Evento evento, Usuario usuario) {
         this.view = view;
         this.orquestrador = orquestrador;
         this.notificacaoService = notificacaoService;
         this.eventoOriginal = evento;
+        this.usuario = usuario;
         this.view.setController(this);
     }
 
@@ -56,12 +60,10 @@ public class DialogoEventoController {
     }
 
     private boolean salvarNovoEvento(String titulo, String descricao, LocalDate deadline) {
-        boolean sucesso = orquestrador.cadastrarEvento(titulo, descricao, deadline);
+        Evento novoEvento = new Evento(titulo, descricao, usuario, deadline);
+        boolean sucesso = orquestrador.cadastrarEvento(novoEvento);
         if (sucesso) {
-            // O ideal seria o método de cadastro retornar o evento criado para a notificação.
-            // Para manter a simplicidade, criamos um evento temporário para notificar.
-            Evento evento = new Evento(titulo, descricao, "", deadline);
-            notificacaoService.notificarCriacaoEvento(evento);
+            notificacaoService.notificarCriacaoEvento(novoEvento);
             return true;
         } else {
             view.exibirMensagem("Erro ao Cadastrar", "Não foi possível cadastrar o evento.\nVerifique se já não existe um evento com a mesma data.", JOptionPane.WARNING_MESSAGE);

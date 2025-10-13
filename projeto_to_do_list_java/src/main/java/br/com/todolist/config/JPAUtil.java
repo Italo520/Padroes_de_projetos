@@ -1,4 +1,4 @@
-// package br.com.todolist.config;
+package br.com.todolist.config;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

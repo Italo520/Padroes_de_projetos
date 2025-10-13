@@ -11,20 +11,22 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import br.com.todolist.entity.Usuario;
+
 public class DialogoTarefaController {
 
     private final DialogoTarefaView view;
     private final Orquestrador orquestrador;
     private final NotificacaoService notificacaoService;
-    private final String emailUsuario;
+    private final Usuario usuario;
     private final Tarefa tarefaOriginal;
     private final DateTimeFormatter formatadorDeData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public DialogoTarefaController(DialogoTarefaView view, Orquestrador orquestrador, NotificacaoService notificacaoService, String emailUsuario, Tarefa tarefa) {
+    public DialogoTarefaController(DialogoTarefaView view, Orquestrador orquestrador, NotificacaoService notificacaoService, Usuario usuario, Tarefa tarefa) {
         this.view = view;
         this.orquestrador = orquestrador;
         this.notificacaoService = notificacaoService;
-        this.emailUsuario = emailUsuario;
+        this.usuario = usuario;
         this.tarefaOriginal = tarefa;
         this.view.setController(this);
     }
@@ -54,7 +56,7 @@ public class DialogoTarefaController {
     }
 
     private void salvarNovaTarefa(String titulo, String descricao, LocalDate deadline, int prioridade) {
-        Tarefa novaTarefa = new Tarefa(titulo, descricao, emailUsuario, deadline, prioridade);
+        Tarefa novaTarefa = new Tarefa(titulo, descricao, usuario, deadline, prioridade);
         orquestrador.cadastrarTarefa(novaTarefa);
         notificacaoService.notificarCriacaoTarefa(novaTarefa);
     }
