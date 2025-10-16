@@ -1,4 +1,4 @@
-package br.com.todolist.service.Gerentes;
+package br.com.todolist.service.gerentes;
 
 import br.com.todolist.dao.TarefaDAO;
 import br.com.todolist.entity.Tarefa;

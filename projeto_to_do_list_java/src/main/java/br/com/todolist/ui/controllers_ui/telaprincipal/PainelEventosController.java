@@ -1,5 +1,16 @@
+package br.com.todolist.ui.controllers_ui.telaprincipal;
+
+import br.com.todolist.entity.Evento;
 import br.com.todolist.entity.Usuario;
+import br.com.todolist.service.NotificacaoService;
+import br.com.todolist.service.Orquestrador;
 import br.com.todolist.ui.controllers_ui.teladialogo.DialogoEventoController;
+import br.com.todolist.ui.views_ui.teladialogo.DialogoEventoView;
+import br.com.todolist.ui.views_ui.telaprincipal.PainelEventosView;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import java.util.List;
 
 public class PainelEventosController {
     private final PainelEventosView view;

@@ -6,7 +6,7 @@ import br.com.todolist.service.NotificacaoService;
 import br.com.todolist.service.Orquestrador;
 import br.com.todolist.ui.controllers_ui.teladialogo.DialogoTarefaController;
 import br.com.todolist.ui.views_ui.teladialogo.DialogoTarefaView;
-import br.com.todolist.ui.views.telaprincipal.PainelTarefasView;
+import br.com.todolist.ui.views_ui.telaprincipal.PainelTarefasView;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;

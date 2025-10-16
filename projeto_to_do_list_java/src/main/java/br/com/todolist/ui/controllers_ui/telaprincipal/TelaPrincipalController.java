@@ -1,11 +1,13 @@
 // Em: src/main/java/br/com/todolist/ui/controllers/telaprincipal/TelaPrincipalController.java
-package br.com.todolist.ui.controllers.telaprincipal;
+package br.com.todolist.ui.controllers_ui.telaprincipal;
 
 import br.com.todolist.entity.Evento;
 import br.com.todolist.entity.Tarefa;
 import br.com.todolist.entity.Usuario;
 import br.com.todolist.service.*;
-import br.com.todolist.ui.views.telaprincipal.TelaPrincipalView;
+import br.com.todolist.service.gerentes.GerenteDeEventos;
+import br.com.todolist.service.gerentes.GerenteDeTarefas;
+import br.com.todolist.ui.views_ui.telaprincipal.TelaPrincipalView;
 
 import javax.swing.*;
 import java.time.LocalDate;

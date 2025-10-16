@@ -2,10 +2,11 @@
 package br.com.todolist.ui.controllers_ui.telausuario;
 
 import br.com.todolist.entity.Usuario;
-import br.com.todolist.service.GerenteDeUsuarios;
+import br.com.todolist.service.gerentes.GerenteDeUsuarios;
 import br.com.todolist.ui.views_ui.telasusuario.TelaCadastroView;
-import br.com.todolist.ui.views.telasusuario.TelaLoginView;
+import br.com.todolist.ui.views_ui.telasusuario.TelaLoginView;
 import br.com.todolist.ui.views_ui.telaprincipal.TelaPrincipalView;
+import br.com.todolist.ui.controllers_ui.telaprincipal.TelaPrincipalController;
 
 public class TelaLoginController {
 

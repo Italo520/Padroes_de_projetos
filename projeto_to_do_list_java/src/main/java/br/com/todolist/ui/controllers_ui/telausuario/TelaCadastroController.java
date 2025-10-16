@@ -1,7 +1,7 @@
 package br.com.todolist.ui.controllers_ui.telausuario;
 
-import br.com.todolist.service.GerenteDeUsuarios;
-import br.com.todolist.ui.views.telasusuario.TelaCadastroView;
+import br.com.todolist.service.gerentes.GerenteDeUsuarios;
+import br.com.todolist.ui.views_ui.telasusuario.TelaCadastroView;
 import javax.swing.JOptionPane;
 
 public class TelaCadastroController {

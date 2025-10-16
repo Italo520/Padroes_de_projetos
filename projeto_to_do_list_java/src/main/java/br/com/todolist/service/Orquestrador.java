@@ -1,9 +1,11 @@
 package br.com.todolist.service;
 
 
+import br.com.todolist.entity.Evento;
+import br.com.todolist.entity.Tarefa;
 import br.com.todolist.entity.Usuario;
-import br.com.todolist.service.Gerentes.GerenteDeEventos;
-import br.com.todolist.service.Gerentes.GerenteDeTarefas;
+import br.com.todolist.service.gerentes.GerenteDeEventos;
+import br.com.todolist.service.gerentes.GerenteDeTarefas;
 
 import java.time.LocalDate;
 import java.time.YearMonth;

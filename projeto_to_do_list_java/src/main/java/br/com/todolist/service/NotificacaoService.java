@@ -27,19 +27,19 @@ public class NotificacaoService {
                 + "Título: " + tarefa.getTitulo() + "\n"
                 + "Descrição: " + tarefa.getDescricao() + "\n"
                 + "Prazo: " + tarefa.getDeadline() + "\n";
-        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo);
+        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo, "");
     }
 
     public void notificarexclusaoTarefa(Tarefa tarefa) {
         String assunto = "Notificação: Tarefa Excluída";
         String corpo = "A tarefa '" + tarefa.getTitulo() + "' foi excluída.";
-        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo);
+        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo, "");
     }
 
     public void notificarEdicaoTarefa(Tarefa tarefa) {
         String assunto = "Notificação: Tarefa Editada";
         String corpo = "A tarefa '" + tarefa.getTitulo() + "' foi editada.";
-        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo);
+        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo, "");
     }
 
     public boolean enviarRelatorioTarefasDoDiaPorEmail(LocalDate dia, String nomeArquivo) {
@@ -64,19 +64,19 @@ public class NotificacaoService {
                 + "Título: " + evento.getTitulo() + "\n"
                 + "Descrição: " + evento.getDescricao() + "\n"
                 + "Prazo: " + evento.getDeadline() + "\n";
-        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo);
+        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo, "");
     }
 
     public void notificarExclusaoEvento(Evento evento) {
         String assunto = "Notificação: Evento Excluído";
         String corpo = "O evento '" + evento.getTitulo() + "' foi excluído.";
-        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo);
+        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo, "");
     }
 
     public void notificarEdicaoEvento(Evento evento) {
         String assunto = "Notificação: Evento Editado";
         String corpo = "O evento '" + evento.getTitulo() + "' foi editado.";
-        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo);
+        mensageiro.enviarEmail(this.emailUsuario, assunto, corpo, "");
     }
 
 

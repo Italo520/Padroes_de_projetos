@@ -12,10 +12,12 @@ import br.com.todolist.util.GeradorDeExcel;
 import br.com.todolist.util.GeradorDePDF;
 
 
-public class RelatorioService {
-    private br.com.todolist.service.GerenteDeTarefas gerenteDeTarefas;
+import br.com.todolist.service.gerentes.GerenteDeTarefas;
 
-    public RelatorioService(br.com.todolist.service.GerenteDeTarefas gerenteDeTarefas) {
+public class RelatorioService {
+    private GerenteDeTarefas gerenteDeTarefas;
+
+    public RelatorioService(GerenteDeTarefas gerenteDeTarefas) {
         this.gerenteDeTarefas = gerenteDeTarefas;
     }
 

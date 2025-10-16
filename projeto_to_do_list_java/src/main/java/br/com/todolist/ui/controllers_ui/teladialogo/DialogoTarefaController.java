@@ -4,7 +4,7 @@ package br.com.todolist.ui.controllers_ui.teladialogo;
 import br.com.todolist.entity.Tarefa;
 import br.com.todolist.service.NotificacaoService;
 import br.com.todolist.service.Orquestrador;
-import br.com.todolist.ui.views.teladialogo.DialogoTarefaView;
+import br.com.todolist.ui.views_ui.teladialogo.DialogoTarefaView;
 
 import javax.swing.JOptionPane;
 import java.time.LocalDate;
